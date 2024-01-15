@@ -7,7 +7,8 @@ function App() {
       <MapLibreMap
         options={{
           style: "https://wms.wheregroup.com/tileserver/style/osm-bright.json",
-          zoom: 4,
+          zoom: 9,
+          center: [-118, 34],
         }}
         style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
       />
