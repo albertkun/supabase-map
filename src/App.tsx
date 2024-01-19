@@ -30,7 +30,6 @@ function App() {
       trackUserLocation: true
     }));
   }, []);
-
   useEffect(() => {
     if (!map.current || !places) return; // wait for map to initialize and places to be fetched
     places.forEach((place) => {
@@ -39,16 +38,55 @@ function App() {
       const popup = new maplibre.Popup({ offset: 25 }).setHTML(
         `<h3>${place.place.charAt(0).toUpperCase() + place.place.slice(1)} </h3> 
         Walkability: ${stars} <br/>
-        <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lon}" target="_blank" rel="noopener noreferrer">More info on Google Maps</a>`
+        <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lon}" target="_blank" rel="noopener noreferrer">More info on Google Maps</a> <br/>
+        <button id="get-directions-${place.place}">Get Directions</button>`
       );
 
       // Add the marker with the popup
-      new maplibre.Marker()
+      const marker = new maplibre.Marker()
         .setLngLat([place.lon, place.lat])
         .setPopup(popup) // sets a popup on this marker
         .addTo(map.current);
+
+      marker.getElement().addEventListener('click', () => {
+        setTimeout(() => {
+          const button = document.getElementById(`get-directions-${place.place}`);
+          if (button) {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                window.open(`https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${place.lat},${place.lon}`, '_blank');
+              });
+            });
+          }
+        }, 0);
+      });
     });
   }, [places]);
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new maplibre.Map({
+      container: mapContainer.current,
+      style: "https://wms.wheregroup.com/tileserver/style/osm-bright.json",
+      center: [-118, 34],
+      zoom: 9,
+    });
+
+    // Add geolocation control to the map
+    map.current.addControl(new maplibre.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    }));
+
+    // Add a marker for LAX
+    new maplibre.Marker()
+      .setLngLat([33.9416, -118.4085])
+      .setPopup(new maplibre.Popup({ offset: 25 }).setText('LAX'))
+      .addTo(map.current);
+  }, []);
 
   async function getPlaces() {
     const { data, error } = await supabase.from("travel").select("place, walkable, lon, lat");
