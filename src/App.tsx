@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibre from "maplibre-gl";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient("https://albertmaps.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhYXNwZWNzcXBtZ2l0dHZkaWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUxNzE5NTEsImV4cCI6MjAyMDc0Nzk1MX0.yvkgXVATqe79CSZnKPWWIN83pHM3-Q5buZJrao5BCsc");
+const supabase = createClient("https://baaspecsqpmgittvdian.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhYXNwZWNzcXBtZ2l0dHZkaWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUxNzE5NTEsImV4cCI6MjAyMDc0Nzk1MX0.yvkgXVATqe79CSZnKPWWIN83pHM3-Q5buZJrao5BCsc");
 
 function App() {
   const mapContainer = useRef(null);

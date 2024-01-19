@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Supabase in Vanilla JS</title>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
+</head>
+<body>
+        <script>
+                // Initialize supabaseClient
+                let supabaseClient = supabase.createClient('https://baaspecsqpmgittvdian.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhYXNwZWNzcXBtZ2l0dHZkaWFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUxNzE5NTEsImV4cCI6MjAyMDc0Nzk1MX0.yvkgXVATqe79CSZnKPWWIN83pHM3-Q5buZJrao5BCsc');
+                async function getPlaces() {
+                        let { data: travel, error } = await supabaseClient
+                            .from('travel')
+                            .select('*')
+                    
+                        if (error) {
+                            console.error('Error: ', error);
+                            return;
+                        }
+                    
+                        // Log the data to the console
+                        console.log('Data: ', travel);
+                    
+                        // Get the div where we want to display the data
+                        const dataDiv = document.getElementById('data');
+                    
+                        // Create a string to hold the HTML
+                        let htmlString = '';
+                    
+                        // Loop through the data and add each item to the HTML string
+                        for (let item of travel) {
+                            htmlString += `<p>${JSON.stringify(item)}</p>`;
+                        }
+                    
+                        // Set the innerHTML of the div to the HTML string
+                        dataDiv.innerHTML = htmlString;
+                    }
+                    
+                    getPlaces();
+        </script>
+        <div id="data"></div>
+</body>
+</html>
