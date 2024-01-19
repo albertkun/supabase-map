@@ -34,9 +34,12 @@ function App() {
   useEffect(() => {
     if (!map.current || !places) return; // wait for map to initialize and places to be fetched
     places.forEach((place) => {
-      // Create a popup with the place data
+      const stars = '★'.repeat(place.walkable) + '☆'.repeat(5 - place.walkable);
+
       const popup = new maplibre.Popup({ offset: 25 }).setHTML(
-        `Place: ${place.place.charAt(0).toUpperCase() + place.place.slice(1)} <br/> Walkability: ${place.walkable}`
+        `<h3>${place.place.charAt(0).toUpperCase() + place.place.slice(1)} </h3> 
+        Walkability: ${stars} <br/>
+        <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lon}" target="_blank" rel="noopener noreferrer">More info on Google Maps</a>`
       );
 
       // Add the marker with the popup
@@ -48,7 +51,7 @@ function App() {
   }, [places]);
 
   async function getPlaces() {
-    const { data, error } = await supabase.from("travel").select("place, lon, lat");
+    const { data, error } = await supabase.from("travel").select("place, walkable, lon, lat");
     if (error) {
       console.error("Error fetching places:", error);
       return;
