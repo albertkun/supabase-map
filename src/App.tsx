@@ -21,17 +21,38 @@ function App() {
       center: [-118, 34],
       zoom: 9,
     });
+
+    // Add geolocation control to the map
+    map.current.addControl(new maplibre.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    }));
   }, []);
 
   useEffect(() => {
-    if (!map.current) return; // wait for map to initialize
+    if (!map.current || !places) return; // wait for map to initialize and places to be fetched
     places.forEach((place) => {
-      new maplibre.Marker().setLngLat([place.lon, place.lat]).addTo(map.current);
+      // Create a popup with the place data
+      const popup = new maplibre.Popup({ offset: 25 }).setHTML(
+        `Place: ${place.place.charAt(0).toUpperCase() + place.place.slice(1)} <br/> Walkability: ${place.walkable}`
+      );
+
+      // Add the marker with the popup
+      new maplibre.Marker()
+        .setLngLat([place.lon, place.lat])
+        .setPopup(popup) // sets a popup on this marker
+        .addTo(map.current);
     });
   }, [places]);
 
   async function getPlaces() {
-    const { data } = await supabase.from("travel").select("place, lon, lat");
+    const { data, error } = await supabase.from("travel").select("place, lon, lat");
+    if (error) {
+      console.error("Error fetching places:", error);
+      return;
+    }
     setPlaces(data);
   }
 
